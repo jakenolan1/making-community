@@ -272,7 +272,7 @@
 
   <div class="hero" id="d-hero">
     <div class="hero-texture"></div>
-    <span class="hero-label">hero photo</span>
+    <span class="hero-label" id="d-hero-label">hero photo</span>
   </div>
 
   <section class="info-grid">
@@ -335,8 +335,18 @@
   document.getElementById('d-title').textContent   = g.month + ' ' + g.year;
   document.getElementById('d-theme').textContent   = g.theme;
 
-  // Tint hero with this month's tone
-  document.getElementById('d-hero').style.background = g.tone;
+  // Seed prefix for this gathering's photos
+  const seed = 'fw' + g.id.replace('-', '');
+
+  // Hero image
+  const heroEl = document.getElementById('d-hero');
+  heroEl.style.background = g.tone;
+  const heroImg = document.createElement('img');
+  heroImg.src = 'https://picsum.photos/seed/' + seed + '-hero/1120/630';
+  heroImg.alt = g.month + ' ' + g.year;
+  heroImg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
+  heroEl.insertBefore(heroImg, heroEl.firstChild);
+  document.getElementById('d-hero-label').style.display = 'none';
 
   // Build photo gallery
   const gallery = document.getElementById('d-gallery');
@@ -344,9 +354,11 @@
     const cell = document.createElement('div');
     cell.className = 'gallery-cell';
     cell.style.background = g.tone;
-    cell.innerHTML =
-      '<div class="gallery-cell-texture"></div>' +
-      '<div class="gallery-cell-label">photo</div>';
+    const cellImg = document.createElement('img');
+    cellImg.src = 'https://picsum.photos/seed/' + seed + '-' + k + '/600/750';
+    cellImg.alt = g.short + ' photo ' + (k + 1);
+    cellImg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
+    cell.appendChild(cellImg);
     gallery.appendChild(cell);
   }
 

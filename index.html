@@ -262,14 +262,12 @@
     img.className = 'tile-img';
     img.style.background = b.tone;
 
-    const tex = document.createElement('div');
-    tex.className = 'tile-texture';
-    img.appendChild(tex);
-
-    const lbl = document.createElement('div');
-    lbl.className = 'tile-label-photo';
-    lbl.textContent = 'photo';
-    img.appendChild(lbl);
+    const photo = document.createElement('img');
+    const seed = 'fw' + b.id.replace('-', '');
+    photo.src = 'https://picsum.photos/seed/' + seed + '/' + w + '/' + h;
+    photo.alt = b.short;
+    photo.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;';
+    img.appendChild(photo);
 
     const date = document.createElement('div');
     date.className = 'tile-date';

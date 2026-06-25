@@ -295,16 +295,18 @@
   }
 
   // --- Drag interaction ---
+  // Use document-level move/up so drag continues even when pointer leaves canvas,
+  // and avoid setPointerCapture which redirects mouseup away from tiles (breaking clicks).
   canvas.addEventListener('pointerdown', function(e) {
+    if (e.button !== undefined && e.button !== 0) return;
     dragging = true; didDrag = false; moved = 0;
     userMoved = true;
     lx = e.clientX; ly = e.clientY;
     vx = 0; vy = 0;
-    try { canvas.setPointerCapture(e.pointerId); } catch(_) {}
     canvas.classList.add('grabbing');
   });
 
-  canvas.addEventListener('pointermove', function(e) {
+  document.addEventListener('pointermove', function(e) {
     if (!dragging) return;
     const dx = e.clientX - lx, dy = e.clientY - ly;
     ox += dx; oy += dy;
@@ -319,9 +321,8 @@
     dragging = false;
     canvas.classList.remove('grabbing');
   }
-  canvas.addEventListener('pointerup', onUp);
-  canvas.addEventListener('pointercancel', onUp);
-  canvas.addEventListener('lostpointercapture', onUp);
+  document.addEventListener('pointerup', onUp);
+  document.addEventListener('pointercancel', onUp);
 
   canvas.addEventListener('wheel', function(e) {
     e.preventDefault();

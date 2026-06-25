@@ -111,6 +111,7 @@
     font-weight: 500;
     letter-spacing: -0.035em;
     color: #faf6ef;
+    text-shadow: 0 2px 32px rgba(31,29,26,.22), 0 1px 6px rgba(31,29,26,.14);
   }
 
   header {
@@ -244,7 +245,7 @@
       for (let dj = -1; dj <= 1; dj++) {
         const el = makeTileEl(b, w, h);
         world.appendChild(el);
-        copies.push({ el, di, dj });
+        copies.push({ el, di, dj, photo: el._photo });
       }
     }
     return { ...b, w, h, copies };
@@ -266,7 +267,8 @@
     const seed = 'fw' + b.id.replace('-', '');
     photo.src = 'https://picsum.photos/seed/' + seed + '/' + w + '/' + h;
     photo.alt = b.short;
-    photo.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;';
+    // Slightly oversized so parallax shift stays within the clipped container
+    photo.style.cssText = 'position:absolute;width:112%;height:112%;left:-6%;top:-6%;object-fit:cover;display:block;will-change:transform;';
     img.appendChild(photo);
 
     const date = document.createElement('div');
@@ -289,6 +291,7 @@
     a.addEventListener('click', function(e) {
       if (didDrag) { e.preventDefault(); e.stopPropagation(); }
     });
+    a._photo = photo;
     return a;
   }
 
@@ -368,7 +371,14 @@
         const x = t.x + ox + (baseN + c.di) * CW;
         const y = t.y + oy + (baseM + c.dj) * CH;
         c.el.style.transform = `translate3d(${x}px,${y}px,0)`;
+
+        // Parallax: photo drifts opposite to tile's offset from center
         const ccx = x + t.w / 2, ccy = y + t.h / 2;
+        const maxPX = t.w * 0.05;
+        const px = Math.max(-maxPX, Math.min(maxPX, -(ccx - cx0) * 0.03));
+        const py = Math.max(-maxPX, Math.min(maxPX, -(ccy - cy0) * 0.03));
+        c.photo.style.transform = `translate(${px}px,${py}px)`;
+
         const d = (ccx - cx0) * (ccx - cx0) + (ccy - cy0) * (ccy - cy0);
         if (d < bestDist) { bestDist = d; bestTile = t; }
       }

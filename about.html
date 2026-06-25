@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About — First Wednesdays</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: #e7e1d8;
+    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    color: #2a2723;
+  }
+  a { color: inherit; -webkit-tap-highlight-color: transparent; }
+  ::selection { background: #cfc7ba; }
+
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 34px;
+    background: linear-gradient(to bottom, rgba(231,225,216,.96), rgba(231,225,216,0));
+  }
+  .logo {
+    text-decoration: none;
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+  }
+  .logo-name {
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    color: #2a2723;
+  }
+  .logo-by {
+    font-size: 12.5px;
+    color: rgba(42,39,35,.55);
+  }
+  nav {
+    display: flex;
+    gap: 28px;
+  }
+  nav a {
+    text-decoration: none;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: #2a2723;
+  }
+
+  main {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 128px 32px 120px;
+  }
+
+  .about-layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  @media (max-width: 760px) {
+    .about-layout { grid-template-columns: 1fr; gap: 48px; }
+  }
+
+  .portrait-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: #d6cfc3;
+    box-shadow: 0 1px 3px rgba(31,29,26,.08);
+  }
+  .portrait-wrap img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .portrait-texture {
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      135deg,
+      rgba(31,29,26,.03) 0 2px,
+      transparent 2px 11px
+    );
+    pointer-events: none;
+  }
+
+  .about-text {
+    padding-top: 8px;
+  }
+
+  .eyebrow {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 12px;
+    letter-spacing: .24em;
+    text-transform: uppercase;
+    color: rgba(42,39,35,.5);
+    margin-bottom: 20px;
+  }
+
+  .about-name {
+    margin: 0 0 32px;
+    font-size: clamp(40px, 6vw, 76px);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 0.92;
+  }
+
+  .divider {
+    width: 32px;
+    height: 1px;
+    background: rgba(42,39,35,.2);
+    margin-bottom: 32px;
+  }
+
+  .about-body {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .about-body p {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.68;
+    color: rgba(42,39,35,.72);
+    text-wrap: pretty;
+  }
+
+  .about-meta {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(31,29,26,.1);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .meta-row {
+    display: flex;
+    gap: 20px;
+    align-items: baseline;
+  }
+  .meta-label {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 10px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: rgba(42,39,35,.4);
+    flex-shrink: 0;
+    width: 80px;
+  }
+  .meta-value {
+    font-size: 14px;
+    color: rgba(42,39,35,.65);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">
+    <span class="logo-name">First Wednesdays</span>
+    <span class="logo-by">by Lisa Abrego</span>
+  </a>
+  <nav>
+    <a href="about.html">About</a>
+    <a href="index.html">Catalog</a>
+  </nav>
+</header>
+
+<main>
+  <div class="about-layout">
+
+    <div class="portrait-wrap">
+      <img src="https://picsum.photos/seed/lisaabrego/340/425" alt="Lisa Abrego">
+      <div class="portrait-texture"></div>
+    </div>
+
+    <div class="about-text">
+      <div class="eyebrow">About</div>
+      <h1 class="about-name">Lisa<br>Abrego</h1>
+      <div class="divider"></div>
+
+      <div class="about-body">
+        <p>On the first Wednesday of each month, my home opens. Friends, neighbors, and people I've only just met come and go as they please, bringing whatever they'd like to share — a bottle, a dish, a dessert, a story. There's no agenda, no guest list, no theme decided in advance. The evening finds its own shape.</p>
+        <p>First Wednesdays started in 2024 as a small thing — a way to stay connected and make space for the kind of slow, unhurried time that's easy to let slip. It's grown in its own way, and each gathering feels different from the last, shaped by who shows up and what they bring.</p>
+        <p>This site is a record of those nights. A place to remember what was on the table, who was in the room, and what made each one its own.</p>
+      </div>
+
+      <div class="about-meta">
+        <div class="meta-row">
+          <span class="meta-label">Running since</span>
+          <span class="meta-value">September 2024</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">When</span>
+          <span class="meta-value">First Wednesday of every month</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Where</span>
+          <span class="meta-value">Washington, D.C.</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+</body>
+</html>

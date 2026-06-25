@@ -157,17 +157,55 @@
     text-wrap: pretty;
   }
 
-  .tags {
+  .menu-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .menu-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 15px;
+    color: rgba(42,39,35,.72);
+    line-height: 1.4;
+  }
+  .menu-list li::before {
+    content: '—';
+    flex-shrink: 0;
+    color: rgba(42,39,35,.3);
+    font-size: 13px;
+  }
+  .menu-note {
+    font-size: 12px;
+    color: rgba(42,39,35,.4);
+    margin-left: 2px;
+  }
+
+  .attendees-section {
+    margin-top: 72px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(31,29,26,.08);
+  }
+  .attendees-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
-  .tag {
-    border: 1px dashed rgba(31,29,26,.24);
-    border-radius: 999px;
-    padding: 7px 15px;
-    font-size: 13px;
-    color: rgba(42,39,35,.5);
+  .attendees-list li {
+    font-size: 15px;
+    color: rgba(42,39,35,.65);
+  }
+  .attendees-list li + li::before {
+    content: ' · ';
+    color: rgba(42,39,35,.28);
+    margin: 0 6px;
   }
 
   .photos-section {
@@ -281,14 +319,28 @@
       <p class="evening-text">A short account of the night — who came, what filled the table, the small things that made it this month's own. Coming soon.</p>
     </div>
     <div>
-      <div class="section-label">On the table</div>
-      <div class="tags">
-        <span class="tag">dish</span>
-        <span class="tag">drink</span>
-        <span class="tag">brought by a friend</span>
-        <span class="tag">+ add</span>
-      </div>
+      <div class="section-label">On the menu</div>
+      <ul class="menu-list" id="d-menu">
+        <li>Dish one <span class="menu-note"></span></li>
+        <li>Dish two <span class="menu-note"></span></li>
+        <li>Dish three <span class="menu-note">(brought by a friend)</span></li>
+        <li>Something to drink</li>
+      </ul>
     </div>
+  </section>
+
+  <section class="attendees-section">
+    <div class="section-label">Who was there</div>
+    <ul class="attendees-list" id="d-attendees">
+      <li>Name</li>
+      <li>Name</li>
+      <li>Name</li>
+      <li>Name</li>
+      <li>Name</li>
+      <li>Name</li>
+      <li>Name</li>
+      <li>Name</li>
+    </ul>
   </section>
 
   <section class="photos-section">

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;background:#e7e1d8;overflow:hidden;font-family:Helvetica,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  a{color:inherit;-webkit-tap-highlight-color:transparent;}
+</style>
+</helmet>
+
+<div id="fw-hl" style="position:fixed;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;transition:opacity .28s ease;line-height:0.84;">
+  <span id="fw-hl-month" style="font-size:13.5vw;font-weight:500;letter-spacing:-0.035em;color:#faf6ef;">June</span>
+  <span id="fw-hl-year" style="font-size:13.5vw;font-weight:500;letter-spacing:-0.035em;color:#faf6ef;">2026</span>
+</div>
+
+<div id="fw-canvas" style="position:fixed;inset:0;z-index:2;overflow:hidden;cursor:grab;touch-action:none;">
+  <div id="fw-grid" style="position:absolute;inset:-220px;background-image:linear-gradient(to right, rgba(31,29,26,.05) 1px, transparent 1px),linear-gradient(to bottom, rgba(31,29,26,.05) 1px, transparent 1px);background-size:64px 64px;"></div>
+  <div id="fw-world" style="position:absolute;inset:0;"></div>
+</div>
+
+<header style="position:fixed;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:26px 34px;pointer-events:none;">
+  <a href="First%20Wednesdays.dc.html" style="pointer-events:auto;text-decoration:none;display:flex;align-items:baseline;gap:9px;">
+    <span style="font-weight:600;font-size:16px;letter-spacing:-0.01em;color:#2a2723;">First Wednesdays</span>
+    <span style="font-size:12.5px;color:rgba(42,39,35,.55);">by Lisa Abrego</span>
+  </a>
+  <nav style="pointer-events:auto;display:flex;gap:28px;">
+    <a href="#" style="text-decoration:none;font-size:11.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#2a2723;">About</a>
+    <a href="First%20Wednesdays.dc.html" style="text-decoration:none;font-size:11.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#2a2723;">Catalog</a>
+  </nav>
+</header>
+
+<div id="fw-hint" style="position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:10;font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:rgba(42,39,35,.4);pointer-events:none;transition:opacity .6s ease;">drag in any direction</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;showGrid&quot;: {&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},
+  &quot;headlineTone&quot;: {&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Soft white&quot;,&quot;Bright white&quot;,&quot;Ink&quot;],&quot;default&quot;:&quot;Soft white&quot;,&quot;tsType&quot;:&quot;string&quot;},
+  &quot;density&quot;: {&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Airy&quot;,&quot;Balanced&quot;,&quot;Dense&quot;],&quot;default&quot;:&quot;Balanced&quot;,&quot;tsType&quot;:&quot;string&quot;}
+}">
+class Component extends DCLogic {
+  componentDidMount(){
+    this.CWbase = 1680; this.CHbase = 1480;
+    this.base = [
+      {id:'2026-06',month:'June',year:'2026',short:'JUN 2026',theme:'Long table, longest day',tone:'#d9d2c6',x:690,y:560,w:300},
+      {id:'2026-05',month:'May',year:'2026',short:'MAY 2026',theme:'Garden cuttings & cold ros\u00e9',tone:'#cfc7ba',x:120,y:120,w:260},
+      {id:'2026-04',month:'April',year:'2026',short:'APR 2026',theme:'Everything green',tone:'#ddd6cb',x:1180,y:90,w:300},
+      {id:'2026-03',month:'March',year:'2026',short:'MAR 2026',theme:'Citrus & first warmth',tone:'#d2cabd',x:300,y:620,w:240},
+      {id:'2026-02',month:'February',year:'2026',short:'FEB 2026',theme:'Soup night',tone:'#e0dacf',x:1240,y:560,w:280},
+      {id:'2026-01',month:'January',year:'2026',short:'JAN 2026',theme:'Clean slate, full pot',tone:'#c9c2b5',x:60,y:980,w:300},
+      {id:'2025-12',month:'December',year:'2025',short:'DEC 2025',theme:'Candles & clementines',tone:'#d6cfc3',x:560,y:140,w:270},
+      {id:'2025-11',month:'November',year:'2025',short:'NOV 2025',theme:'Harvest, hands full',tone:'#dbd4c8',x:980,y:980,w:300},
+      {id:'2025-10',month:'October',year:'2025',short:'OCT 2025',theme:'Borrowed from the orchard',tone:'#cdc6b9',x:1320,y:1080,w:260},
+      {id:'2025-09',month:'September',year:'2025',short:'SEP 2025',theme:'Late tomatoes',tone:'#e2dcd1',x:520,y:1060,w:280}
+    ];
+    this.ox=0; this.oy=0; this.vx=0; this.vy=0;
+    this.dragging=false; this.didDrag=false; this.moved=0;
+    this.canvas = document.getElementById('fw-canvas');
+    this.world  = document.getElementById('fw-world');
+    this.grid   = document.getElementById('fw-grid');
+    this.hl     = document.getElementById('fw-hl');
+    this.hlMonth= document.getElementById('fw-hl-month');
+    this.hlYear = document.getElementById('fw-hl-year');
+    this.hint   = document.getElementById('fw-hint');
+    this._lastDensity = this.props.density;
+    this.applyProps();
+    this.buildTiles();
+    this.centered = false;
+    this.current = this.tiles[0];
+    this.attach();
+    this.render();
+    this.loop();
+  }
+  componentWillUnmount(){ if(this.raf) cancelAnimationFrame(this.raf); }
+  componentDidUpdate(){
+    this.applyProps();
+    if(this._lastDensity !== this.props.density){ this._lastDensity = this.props.density; this.rebuild(); }
+  }
+  densityFactor(){ const d=this.props.density||'Balanced'; return d==='Airy'?1.22:(d==='Dense'?0.82:1); }
+  toneColor(){ const t=this.props.headlineTone||'Soft white'; return t==='Bright white'?'#ffffff':(t==='Ink'?'#2a2723':'#faf6ef'); }
+  applyProps(){
+    if(this.grid) this.grid.style.display = (this.props.showGrid===false)?'none':'block';
+    const c=this.toneColor();
+    if(this.hlMonth){ this.hlMonth.style.color=c; this.hlYear.style.color=c; }
+  }
+  rebuild(){ this.buildTiles(); this.current=null; }
+  buildTiles(){
+    const f=this.densityFactor();
+    this.CW=this.CWbase*f; this.CH=this.CHbase*f;
+    if(this.world) this.world.innerHTML='';
+    this.tiles = this.base.map(b=>{
+      const w=b.w*f, h=w*1.25, x=b.x*f, y=b.y*f;
+      const copies=[];
+      for(const di of [-1,0,1]) for(const dj of [-1,0,1]){
+        const a=this.makeTile(b,w,h);
+        this.world.appendChild(a);
+        copies.push({el:a,di,dj});
+      }
+      return {...b,w,h,x,y,copies};
+    });
+  }
+  makeTile(b,w,h){
+    const a=document.createElement('a');
+    a.href='Gathering.dc.html?m='+b.id;
+    a.draggable=false;
+    a.style.cssText=`position:absolute;left:0;top:0;width:${w}px;height:${h}px;display:block;text-decoration:none;will-change:transform;`;
+    a.innerHTML=
+      `<div class="fw-img" style="position:absolute;inset:0;overflow:hidden;background:${b.tone};transition:transform .5s cubic-bezier(.2,.7,.2,1),box-shadow .5s ease;box-shadow:0 1px 2px rgba(31,29,26,.06);">`
+      + `<div style="position:absolute;inset:0;background-image:repeating-linear-gradient(135deg, rgba(31,29,26,.035) 0 2px, transparent 2px 11px);"></div>`
+      + `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:rgba(31,29,26,.26);">photo</div>`
+      + `</div>`
+      + `<div style="position:absolute;left:13px;bottom:11px;font-size:11px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:rgba(31,29,26,.72);">${b.short}</div>`;
+    a.addEventListener('mouseenter',()=>{ const im=a.querySelector('.fw-img'); im.style.transform='scale(1.035)'; im.style.boxShadow='0 14px 34px rgba(31,29,26,.17)'; a.style.zIndex='5'; });
+    a.addEventListener('mouseleave',()=>{ const im=a.querySelector('.fw-img'); im.style.transform='none'; im.style.boxShadow='0 1px 2px rgba(31,29,26,.06)'; a.style.zIndex=''; });
+    a.addEventListener('click',e=>{ if(this.didDrag){ e.preventDefault(); e.stopPropagation(); } });
+    return a;
+  }
+  attach(){
+    const c=this.canvas;
+    c.addEventListener('pointerdown',e=>{
+      this.dragging=true; this.didDrag=false; this.moved=0; this.userMoved=true;
+      this.lx=e.clientX; this.ly=e.clientY; this.vx=0; this.vy=0;
+      try{ c.setPointerCapture(e.pointerId); }catch(_){}
+      c.style.cursor='grabbing';
+    });
+    c.addEventListener('pointermove',e=>{
+      if(!this.dragging) return;
+      const dx=e.clientX-this.lx, dy=e.clientY-this.ly;
+      this.ox+=dx; this.oy+=dy; this.vx=dx; this.vy=dy;
+      this.lx=e.clientX; this.ly=e.clientY;
+      this.moved+=Math.abs(dx)+Math.abs(dy);
+      if(this.moved>6){ this.didDrag=true; this.hideHint(); }
+    });
+    const up=()=>{ if(!this.dragging) return; this.dragging=false; c.style.cursor='grab'; };
+    c.addEventListener('pointerup',up);
+    c.addEventListener('pointercancel',up);
+    c.addEventListener('lostpointercapture',up);
+    c.addEventListener('wheel',e=>{ e.preventDefault(); this.userMoved=true; this.ox-=e.deltaX; this.oy-=e.deltaY; this.vx=0; this.vy=0; this.hideHint(); },{passive:false});
+  }
+  hideHint(){ if(this.hint && this.hint.style.opacity!=='0'){ this.hint.style.opacity='0'; } }
+  loop(){
+    const step=()=>{
+      if(!this.dragging){
+        this.ox+=this.vx; this.oy+=this.vy;
+        this.vx*=0.93; this.vy*=0.93;
+        if(Math.abs(this.vx)<0.05) this.vx=0;
+        if(Math.abs(this.vy)<0.05) this.vy=0;
+      }
+      this.render();
+      this.raf=requestAnimationFrame(step);
+    };
+    this.raf=requestAnimationFrame(step);
+  }
+  render(){
+    const vw=window.innerWidth, vh=window.innerHeight, cx0=vw/2, cy0=vh/2;
+    if(!this.userMoved && vw>1 && vh>1){
+      const t0=this.tiles[0];
+      this.ox = cx0 - (t0.x + t0.w/2);
+      this.oy = cy0 - (t0.y + t0.h/2);
+    }
+    let best=Infinity, bt=null;
+    for(const t of this.tiles){
+      const baseN=Math.round((cx0-(t.x+t.w/2+this.ox))/this.CW);
+      const baseM=Math.round((cy0-(t.y+t.h/2+this.oy))/this.CH);
+      for(const c of t.copies){
+        const x=t.x+this.ox+(baseN+c.di)*this.CW;
+        const y=t.y+this.oy+(baseM+c.dj)*this.CH;
+        c.el.style.transform=`translate3d(${x}px,${y}px,0)`;
+        const ccx=x+t.w/2, ccy=y+t.h/2;
+        const d=(ccx-cx0)*(ccx-cx0)+(ccy-cy0)*(ccy-cy0);
+        if(d<best){ best=d; bt=t; }
+      }
+    }
+    if(bt && bt!==this.current) this.setHeadline(bt);
+    if(this.grid && this.props.showGrid!==false){
+      const g=64*this.densityFactor();
+      this.grid.style.backgroundPosition=`${this.ox%g}px ${this.oy%g}px`;
+    }
+  }
+  setHeadline(t){
+    this.current=t;
+    if(this.hl) this.hl.style.opacity='0';
+    clearTimeout(this._ht);
+    this._ht=setTimeout(()=>{
+      if(this.hlMonth) this.hlMonth.textContent=t.month;
+      if(this.hlYear) this.hlYear.textContent=t.year;
+      if(this.hl) this.hl.style.opacity='1';
+    },170);
+  }
+  renderVals(){ return {}; }
+}
+</script>
+</body>
+</html>

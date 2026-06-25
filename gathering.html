@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>First Wednesdays</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: #e7e1d8;
+    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    color: #2a2723;
+  }
+  a { color: inherit; -webkit-tap-highlight-color: transparent; }
+  ::selection { background: #cfc7ba; }
+
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 34px;
+    background: linear-gradient(to bottom, rgba(231,225,216,.96), rgba(231,225,216,0));
+  }
+  .logo {
+    text-decoration: none;
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+  }
+  .logo-name {
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    color: #2a2723;
+  }
+  .logo-by {
+    font-size: 12.5px;
+    color: rgba(42,39,35,.55);
+  }
+  nav {
+    display: flex;
+    gap: 28px;
+  }
+  nav a {
+    text-decoration: none;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: #2a2723;
+  }
+
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 128px 32px 120px;
+  }
+
+  .back-link {
+    display: inline-block;
+    text-decoration: none;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: rgba(42,39,35,.55);
+    margin-bottom: 54px;
+  }
+  .back-link:hover { color: #2a2723; }
+
+  #d-eyebrow {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 12px;
+    letter-spacing: .24em;
+    text-transform: uppercase;
+    color: rgba(42,39,35,.5);
+    margin-bottom: 18px;
+  }
+
+  #d-title {
+    margin: 0;
+    font-size: clamp(52px, 9vw, 118px);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 0.92;
+  }
+
+  #d-theme {
+    margin: 20px 0 0;
+    font-size: clamp(20px, 2.4vw, 30px);
+    font-weight: 400;
+    color: rgba(42,39,35,.62);
+    letter-spacing: -0.01em;
+  }
+
+  .hero {
+    margin-top: 56px;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 1px dashed rgba(31,29,26,.22);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .hero-texture {
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      135deg,
+      rgba(31,29,26,.03) 0 2px,
+      transparent 2px 12px
+    );
+  }
+  .hero-label {
+    position: relative;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 12px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: rgba(31,29,26,.34);
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px 56px;
+    margin-top: 88px;
+  }
+  @media (max-width: 680px) {
+    .info-grid { grid-template-columns: 1fr; gap: 48px; }
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: rgba(42,39,35,.45);
+    margin-bottom: 16px;
+  }
+
+  .evening-text {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.6;
+    color: rgba(42,39,35,.7);
+    text-wrap: pretty;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tag {
+    border: 1px dashed rgba(31,29,26,.24);
+    border-radius: 999px;
+    padding: 7px 15px;
+    font-size: 13px;
+    color: rgba(42,39,35,.5);
+  }
+
+  .photos-section {
+    margin-top: 96px;
+  }
+
+  #d-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  @media (max-width: 600px) {
+    #d-gallery { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .gallery-cell {
+    aspect-ratio: 4 / 5;
+    border: 1px dashed rgba(31,29,26,.2);
+    position: relative;
+    overflow: hidden;
+  }
+  .gallery-cell-texture {
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      135deg,
+      rgba(31,29,26,.03) 0 2px,
+      transparent 2px 11px
+    );
+  }
+  .gallery-cell-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 10px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: rgba(31,29,26,.3);
+  }
+
+  .page-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    margin-top: 104px;
+    padding-top: 34px;
+    border-top: 1px solid rgba(31,29,26,.12);
+  }
+
+  .nav-prev,
+  .nav-next {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-width: 45%;
+  }
+  .nav-next { align-items: flex-end; text-align: right; }
+
+  .nav-dir {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 10px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: rgba(42,39,35,.45);
+  }
+  .nav-month {
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+  .nav-prev:hover .nav-month,
+  .nav-next:hover .nav-month {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">
+    <span class="logo-name">First Wednesdays</span>
+    <span class="logo-by">by Lisa Abrego</span>
+  </a>
+  <nav>
+    <a href="about.html">About</a>
+    <a href="index.html">Catalog</a>
+  </nav>
+</header>
+
+<main>
+  <a href="index.html" class="back-link">← &nbsp; Back to catalog</a>
+
+  <div id="d-eyebrow"></div>
+  <h1 id="d-title"></h1>
+  <p id="d-theme"></p>
+
+  <div class="hero" id="d-hero">
+    <div class="hero-texture"></div>
+    <span class="hero-label">hero photo</span>
+  </div>
+
+  <section class="info-grid">
+    <div>
+      <div class="section-label">The evening</div>
+      <p class="evening-text">A short account of the night — who came, what filled the table, the small things that made it this month's own. Coming soon.</p>
+    </div>
+    <div>
+      <div class="section-label">On the table</div>
+      <div class="tags">
+        <span class="tag">dish</span>
+        <span class="tag">drink</span>
+        <span class="tag">brought by a friend</span>
+        <span class="tag">+ add</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="photos-section">
+    <div class="section-label">Photographs</div>
+    <div id="d-gallery"></div>
+  </section>
+
+  <nav class="page-nav">
+    <a id="d-prev" href="#" class="nav-prev">
+      <span class="nav-dir">← Earlier</span>
+      <span id="d-prev-label" class="nav-month"></span>
+    </a>
+    <a id="d-next" href="#" class="nav-next">
+      <span class="nav-dir">Later →</span>
+      <span id="d-next-label" class="nav-month"></span>
+    </a>
+  </nav>
+</main>
+
+<script>
+(function () {
+  const GATHERINGS = [
+    {id:'2026-06',month:'June',    year:'2026',short:'JUN 2026',theme:'Long table, longest day',         tone:'#d9d2c6'},
+    {id:'2026-05',month:'May',     year:'2026',short:'MAY 2026',theme:'Garden cuttings & cold rosé', tone:'#cfc7ba'},
+    {id:'2026-04',month:'April',   year:'2026',short:'APR 2026',theme:'Everything green',               tone:'#ddd6cb'},
+    {id:'2026-03',month:'March',   year:'2026',short:'MAR 2026',theme:'Citrus & first warmth',        tone:'#d2cabd'},
+    {id:'2026-02',month:'February',year:'2026',short:'FEB 2026',theme:'Soup night',                     tone:'#e0dacf'},
+    {id:'2026-01',month:'January', year:'2026',short:'JAN 2026',theme:'Clean slate, full pot',          tone:'#c9c2b5'},
+    {id:'2025-12',month:'December',year:'2025',short:'DEC 2025',theme:'Candles & clementines',       tone:'#d6cfc3'},
+    {id:'2025-11',month:'November',year:'2025',short:'NOV 2025',theme:'Harvest, hands full',            tone:'#dbd4c8'},
+    {id:'2025-10',month:'October', year:'2025',short:'OCT 2025',theme:'Borrowed from the orchard',     tone:'#cdc6b9'},
+    {id:'2025-09',month:'September',year:'2025',short:'SEP 2025',theme:'Late tomatoes',                tone:'#e2dcd1'},
+  ];
+
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('m') || GATHERINGS[0].id;
+  let i = GATHERINGS.findIndex(function(g) { return g.id === id; });
+  if (i < 0) i = 0;
+  const g = GATHERINGS[i];
+
+  // Set page content
+  document.title = g.month + ' ' + g.year + ' — First Wednesdays';
+  document.getElementById('d-eyebrow').textContent = g.short;
+  document.getElementById('d-title').textContent   = g.month + ' ' + g.year;
+  document.getElementById('d-theme').textContent   = g.theme;
+
+  // Tint hero with this month's tone
+  document.getElementById('d-hero').style.background = g.tone;
+
+  // Build photo gallery
+  const gallery = document.getElementById('d-gallery');
+  for (let k = 0; k < 6; k++) {
+    const cell = document.createElement('div');
+    cell.className = 'gallery-cell';
+    cell.style.background = g.tone;
+    cell.innerHTML =
+      '<div class="gallery-cell-texture"></div>' +
+      '<div class="gallery-cell-label">photo</div>';
+    gallery.appendChild(cell);
+  }
+
+  // Earlier = older (higher index), Later = newer (lower index)
+  const earlier = GATHERINGS[i + 1];
+  const later   = GATHERINGS[i - 1];
+
+  const prevEl      = document.getElementById('d-prev');
+  const prevLabelEl = document.getElementById('d-prev-label');
+  const nextEl      = document.getElementById('d-next');
+  const nextLabelEl = document.getElementById('d-next-label');
+
+  if (earlier) {
+    prevEl.href = 'gathering.html?m=' + earlier.id;
+    prevLabelEl.textContent = earlier.month + ' ' + earlier.year;
+  } else {
+    prevEl.style.visibility = 'hidden';
+  }
+
+  if (later) {
+    nextEl.href = 'gathering.html?m=' + later.id;
+    nextLabelEl.textContent = later.month + ' ' + later.year;
+  } else {
+    nextEl.style.visibility = 'hidden';
+  }
+})();
+</script>
+</body>
+</html>
